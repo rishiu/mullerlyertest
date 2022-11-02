@@ -9,7 +9,9 @@ from models import SimpleMullerLyerModel, ResnetMullerLyerModel, MullerLyerDatas
 from symbol import test
 
 def train(model_type, epochs, train_dir, test_dir, lr=1e-4, checkpoint=None):
-    model = model_type().float()
+    device = torch.device("cuda" if torch.cuda.is_available() else 'cpu')
+
+    model = model_type().to(device).float()
     optimizer = optim.SGD(model.parameters(), lr=lr)
 
     loss_fn = nn.CrossEntropyLoss()
@@ -26,6 +28,8 @@ def train(model_type, epochs, train_dir, test_dir, lr=1e-4, checkpoint=None):
         avg_loss = 0.0
         batch_count = 0
         for batch, (X, y) in enumerate(train_dataloader):
+            X = X.to(device)
+            y = y.to(device)
             optimizer.zero_grad()
 
             output = model(X.float())
@@ -45,7 +49,8 @@ def train(model_type, epochs, train_dir, test_dir, lr=1e-4, checkpoint=None):
             avg_loss = 0.0
             correct = 0
             for tbatch, (X, y) in enumerate(test_dataloader):
-                output = model(X.float())
+                X = X.to(device)
+                output = model(X.float()).cpu()
                 loss = loss_fn(output, y)
                 correct += (output.argmax(1) == y.argmax(1)).type(torch.float).sum().item()
             
