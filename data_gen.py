@@ -102,10 +102,6 @@ if __name__ == "__main__":
                     top_len = np.random.randint(120,211)
                     bot_len = top_len - np.random.randint(2,63)
 
-                if type == "illusion":
-                    top_len = np.random.randint(120,211)
-                    bot_len = top_len
-
                 img = gen_img(top_len, bot_len, arrow_len, angle, type)
                 img.save(base_dir+"/"+str(idx)+"_"+category+".jpg")
                 idx += 1
