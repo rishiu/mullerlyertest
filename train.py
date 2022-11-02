@@ -63,10 +63,6 @@ def train(model_type, epochs, train_dir, val_dir, test_dir, lr=5e-4, checkpoint=
                 total_short += short_idx.count_nonzero().item()
                 long_correct += (output[long_idx].argmax(1) == y[long_idx].argmax(1)).type(torch.float).sum().item()
                 short_correct += (output[short_idx].argmax(1) == y[short_idx].argmax(1)).type(torch.float).sum().item()
-                print(long_correct)
-                print(short_correct)
-                print(total_long)
-                print(total_short)
                 correct += long_correct + short_correct
                 avg_loss += float(loss)
             avg_loss /= len(val_dataloader)
