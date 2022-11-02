@@ -7,6 +7,14 @@ from torchvision.io import read_image
 from torchvision.models import resnet18
 import os
 
+def init_weights(m):
+    if isinstance(m, nn.Linear):
+        nn.init.kaiming_uniform_(m.weight)
+        m.bias.data.fill_(0.01)
+    if isinstance(m, nn.Conv2d):
+        nn.init.kaiming_uniform_(m.weight)
+        m.bias.data.fill_(0.01)
+
 class MullerLyerDataset(Dataset):
     def __init__(self, data_dir):
         self.data_dir = data_dir
@@ -37,6 +45,7 @@ class SimpleMullerLyerModel(nn.Module):
             nn.Linear(2048, 2),
             nn.Softmax()
         )
+        self.model.apply(init_weights)
 
     def forward(self, x):
         y = self.model(x)

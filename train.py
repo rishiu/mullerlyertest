@@ -63,10 +63,11 @@ def train(model_type, epochs, train_dir, val_dir, test_dir, lr=5e-4, checkpoint=
                 total_short += short_idx.count_nonzero().item()
                 long_correct += (output[long_idx].argmax(1) == y[long_idx].argmax(1)).type(torch.float).sum().item()
                 short_correct += (output[short_idx].argmax(1) == y[short_idx].argmax(1)).type(torch.float).sum().item()
-                correct += long_correct + short_correct
+                correct += (output.argmax(1) == y.argmax(1)).type(torch.float).sum().item()
                 avg_loss += float(loss)
             avg_loss /= len(val_dataloader)
             print("Validation: ")
+            assert correct == long_correct + short_correct
             print("Avg Loss: "+str(avg_loss)+" Accuracy: "+str(correct / len(val_dataset)))
             print("Long Accuracy: "+str(long_correct / total_long)+" Short Accuracy:"+str(short_correct / total_short))
 
@@ -96,6 +97,7 @@ def train(model_type, epochs, train_dir, val_dir, test_dir, lr=5e-4, checkpoint=
         tavg_loss += float(loss)
     tavg_loss /= len(test_dataloader)
     print("Test: ")
+    assert tcorrect == ttotal_long + ttotal_short
     print("Avg Loss: "+str(tavg_loss)+" Accuracy: "+str(correct / len(test_dataset)))
     print("Long Accuracy: "+str(tlong_correct / ttotal_long)+" Short Accuracy:"+str(tshort_correct / ttotal_short))
 
