@@ -38,7 +38,7 @@ def train(model_type, epochs, train_dir, test_dir, lr=1e-4, checkpoint=None):
             loss.backward()
             optimizer.step()
 
-            if batch % 100 == 0:
+            if batch % 10 == 0:
                 print("Batch: "+str(batch)+" Loss: " + str(float(loss)))
             avg_loss += float(loss)
             batch_count += 1
@@ -53,7 +53,8 @@ def train(model_type, epochs, train_dir, test_dir, lr=1e-4, checkpoint=None):
                 output = model(X.float()).cpu()
                 loss = loss_fn(output, y)
                 correct += (output.argmax(1) == y.argmax(1)).type(torch.float).sum().item()
-            
+                avg_loss += float(loss)
+            avg_loss /= len(test_dataloader)
             print("Test: ")
             print("Avg Loss: "+str(avg_loss)+" Accuracy: "+str(correct / len(test_dataset)))
 
